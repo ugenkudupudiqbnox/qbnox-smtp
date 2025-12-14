@@ -1,19 +1,17 @@
 <?php
 declare(strict_types=1);
 
-use PHPMailer\PHPMailer\OAuth;
-
 class Qbnox_SMTP_Mailer {
 
     /**
-     * Bootstrap mailer hooks
+     * Register PHPMailer configuration hook
      */
     public static function init(): void {
         add_action('phpmailer_init', [__CLASS__, 'configure']);
     }
 
     /**
-     * Configure PHPMailer for SMTP / OAuth
+     * Configure SMTP settings
      */
     public static function configure($phpmailer): void {
 
@@ -22,9 +20,6 @@ class Qbnox_SMTP_Mailer {
         if (empty($cfg['smtp']['host'])) {
             return;
         }
-
-        // Enable exceptions so failures are catchable
-        $phpmailer->exceptions = true;
 
         $phpmailer->isSMTP();
         $phpmailer->Host       = $cfg['smtp']['host'];

@@ -16,14 +16,13 @@ class Qbnox_SMTP_REST {
     },
     'callback' => function (WP_REST_Request $req) {
 
-        if ($req->get_method() === 'POST') {
-            update_site_option(
-                'qbnox_smtp_network',
+	if ($req->get_method() === 'POST') {
+            Qbnox_SMTP_Settings::save(
                 $req->get_json_params()
             );
         }
 
-        return get_site_option('qbnox_smtp_network', []);
+	return Qbnox_SMTP_Settings::get();
     }
 ]);
 

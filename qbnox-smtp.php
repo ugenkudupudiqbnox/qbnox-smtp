@@ -20,7 +20,17 @@ require_once QBNOX_SMTP_PATH.'includes/class-rest.php';
 require_once QBNOX_SMTP_PATH.'includes/class-webhooks.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-admin-ui.php';
 
-register_activation_hook(__FILE__, ['Qbnox_SMTP_Logger','install']);
+register_activation_hook(__FILE__, function () {
+    Qbnox_SMTP_Logger::install();
+
+    if (get_site_option('qbnox_smtp_network') === false) {
+        update_site_option(
+            'qbnox_smtp_network',
+            Qbnox_SMTP_Settings::defaults()
+        );
+    }
+});
+
 
 Qbnox_SMTP_Mailer::init();
 Qbnox_SMTP_REST::init();

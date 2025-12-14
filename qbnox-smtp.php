@@ -18,8 +18,10 @@ require_once QBNOX_SMTP_PATH.'includes/class-oauth.php';
 require_once QBNOX_SMTP_PATH.'includes/class-mailer.php';
 require_once QBNOX_SMTP_PATH.'includes/class-rest.php';
 require_once QBNOX_SMTP_PATH.'includes/class-webhooks.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-admin-ui.php';
 
 register_activation_hook(__FILE__, ['Qbnox_SMTP_Logger','install']);
 
 Qbnox_SMTP_Mailer::init();
 Qbnox_SMTP_REST::init();
+Qbnox_SMTP_Admin_UI::init();

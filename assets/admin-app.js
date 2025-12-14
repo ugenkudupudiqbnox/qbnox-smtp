@@ -1,67 +1,94 @@
-( function( wp ) {
-    const { createElement, useState, useEffect } = wp.element;
-    const apiFetch = wp.apiFetch;
+(function (wp) {
+  const { createElement, useState, useEffect } = wp.element;
+  const apiFetch = wp.apiFetch;
 
-    function Analytics() {
-        const [data, setData] = useState([]);
-        const [loading, setLoading] = useState(true);
+  function App() {
+    const [cfg, setCfg] = useState(null);
+    const [saving, setSaving] = useState(false);
 
-        useEffect(() => {
-            apiFetch({ path: '/qbnox-smtp/v1/analytics' })
-                .then(res => {
-                    setData(res || []);
-                    setLoading(false);
-                })
-                .catch(() => setLoading(false));
-        }, []);
+    useEffect(() => {
+      apiFetch({ path: '/qbnox-smtp/v1/settings' })
+        .then(setCfg);
+    }, []);
 
-        if (loading) {
-            return createElement('p', null, 'Loading analytics…');
-        }
+    if (!cfg) return createElement('p', null, 'Loading settings…');
 
-        return createElement(
-            'table',
-            { className: 'widefat striped' },
-            createElement(
-                'thead',
-                null,
-                createElement('tr', null,
-                    createElement('th', null, 'Event'),
-                    createElement('th', null, 'Count')
-                )
-            ),
-            createElement(
-                'tbody',
-                null,
-                data.map(row =>
-                    createElement('tr', { key: row.event },
-                        createElement('td', null, row.event),
-                        createElement('td', null, row.total)
-                    )
-                )
-            )
-        );
-    }
+    const update = (path, value) => {
+      const next = { ...cfg };
+      next[path[0]][path[1]] = value;
+      setCfg(next);
+    };
 
-    function App() {
-        return createElement(
-            'div',
-            { className: 'qbnox-card' },
-            createElement('h2', null, 'Email Delivery Analytics'),
-            createElement(
-                'p',
-                null,
-                'Live delivery, bounce, complaint, open and click events.'
-            ),
-            createElement(Analytics, null)
-        );
-    }
+    const save = () => {
+      setSaving(true);
+      apiFetch({
+        path: '/qbnox-smtp/v1/settings',
+        method: 'POST',
+        data: cfg
+      }).then(() => setSaving(false));
+    };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const root = document.getElementById('qbnox-smtp-root');
-        if (root) {
-            wp.element.render(createElement(App), root);
-        }
-    });
+    const testMail = () => {
+      apiFetch({
+        path: '/qbnox-smtp/v1/test-mail',
+        method: 'POST'
+      }).then(() => alert('Test email sent'));
+    };
 
-})( window.wp );
+    return createElement(
+      'div',
+      { className: 'qbnox-card' },
+
+      createElement('h2', null, 'SMTP Configuration'),
+
+      createElement('input', {
+        placeholder: 'SMTP Host',
+        value: cfg.smtp?.host || '',
+        onChange: e => update(['smtp','host'], e.target.value)
+      }),
+
+      createElement('input', {
+        placeholder: 'SMTP Username',
+        value: cfg.smtp?.username || '',
+        onChange: e => update(['smtp','username'], e.target.value)
+      }),
+
+      createElement('input', {
+        type: 'password',
+        placeholder: 'SMTP Password',
+        value: cfg.smtp?.password || '',
+        onChange: e => update(['smtp','password'], e.target.value)
+      }),
+
+      createElement('input', {
+        placeholder: 'From Email',
+        value: cfg.smtp?.from_email || '',
+        onChange: e => update(['smtp','from_email'], e.target.value)
+      }),
+
+      createElement(
+        'p',
+        null,
+        createElement(
+          'button',
+          { className: 'button button-primary', onClick: save, disabled: saving },
+          saving ? 'Saving…' : 'Save Settings'
+        ),
+        ' ',
+        createElement(
+          'button',
+          { className: 'button', onClick: testMail },
+          'Send Test Email'
+        )
+      )
+    );
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    wp.element.render(
+      createElement(App),
+      document.getElementById('qbnox-smtp-root')
+    );
+  });
+})(window.wp);
+

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Qbnox Systems – Advanced SMTP
  * Description: Enterprise SMTP plugin with Multisite support, OAuth, Webhooks, Analytics and Test Email diagnostics.
- * Version: 2.0.1
+ * Version: 2.0.3
  * Author: Qbnox Systems
  * Network: true
  */

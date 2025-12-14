@@ -1,3 +1,3 @@
 # Qbnox Systems – Advanced SMTP
 
-Enterprise SMTP plugin.
+Enterprise-grade SMTP plugin with OAuth2, SES/Brevo webhooks and analytics.

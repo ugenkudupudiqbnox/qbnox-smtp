@@ -1,1 +1,112 @@
 /* Qbnox Systems Admin Styles */
+/* Qbnox SMTP Admin UI */
+
+#qbnox-smtp-root {
+  max-width: 980px;
+  margin-top: 20px;
+}
+
+.qbnox-card {
+  background: #fff;
+  border: 1px solid #ccd0d4;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.qbnox-tabs {
+  display: flex;
+  border-bottom: 1px solid #ccd0d4;
+  margin-bottom: 20px;
+}
+
+.qbnox-tab {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+}
+
+.qbnox-tab.active {
+  border-bottom-color: #2271b1;
+  color: #2271b1;
+}
+
+.qbnox-field {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.qbnox-field label {
+  font-weight: 600;
+}
+
+.qbnox-field input,
+.qbnox-field select {
+  width: 100%;
+  max-width: 420px;
+}
+
+.qbnox-actions {
+  margin-top: 24px;
+}
+
+.qbnox-health {
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.qbnox-health.ok {
+  color: #2e7d32;
+}
+
+.qbnox-health.bad {
+  color: #d63638;
+}
+
+@media (max-width: 782px) {
+  .qbnox-field {
+    grid-template-columns: 1fr;
+  }
+}
+
+.qbnox-password-wrap {
+  position: relative;
+  max-width: 420px;
+}
+
+.qbnox-password-wrap input {
+  padding-right: 36px;
+}
+
+.qbnox-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+}
+
+.qbnox-eye:hover {
+  color: #2271b1;
+}
+
+/* Password eye animation */
+
+.qbnox-eye {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.qbnox-eye.closed {
+  transform: rotate(0deg);
+  opacity: 0.6;
+}
+
+.qbnox-eye.open {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+

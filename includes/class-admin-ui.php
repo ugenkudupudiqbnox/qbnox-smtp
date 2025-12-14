@@ -37,16 +37,17 @@ class Qbnox_SMTP_Admin_UI {
             'qbnox-smtp-admin',
             QBNOX_SMTP_URL . 'assets/admin.css',
             [],
-            '2.0.1'
+	    QBNOX_SMTP_VERSION
         );
 
         wp_enqueue_script(
             'qbnox-smtp-admin',
             QBNOX_SMTP_URL . 'assets/admin-app.js',
             ['wp-element', 'wp-api-fetch'],
-            '2.0.1',
+	    QBNOX_SMTP_VERSION,
             true
         );
+	wp_enqueue_style('dashicons');
     }
 }
 

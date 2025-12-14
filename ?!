@@ -1,0 +1,242 @@
+(function (wp) {
+  const { createElement, useState, useEffect } = wp.element;
+  const apiFetch = wp.apiFetch;
+
+  const PROVIDERS = {
+    custom: { label: 'Custom SMTP' },
+    brevo: {
+      label: 'Brevo',
+      host: 'smtp-relay.brevo.com',
+      port: 587,
+      encryption: 'tls'
+    },
+    ses: {
+      label: 'Amazon SES',
+      host: 'email-smtp.us-east-1.amazonaws.com',
+      port: 587,
+      encryption: 'tls'
+    },
+    postmark: {
+      label: 'Postmark',
+      host: 'smtp.postmarkapp.com',
+      port: 587,
+      encryption: 'tls'
+    }
+  };
+
+  function App() {
+    const [cfg, setCfg] = useState(null);
+    const [tab, setTab] = useState('smtp');
+    const [saving, setSaving] = useState(false);
+    const [showPass, setShowPass] = useState(false);
+    const [health, setHealth] = useState(null);
+
+    useEffect(() => {
+      apiFetch({ path: '/qbnox-smtp/v1/settings' }).then(setCfg);
+    }, []);
+
+    if (!cfg) return createElement('p', null, 'Loading…');
+
+const update = (path, value) => {
+  const next = JSON.parse(JSON.stringify(cfg));
+  if (!next[path[0]]) next[path[0]] = {};
+  next[path[0]][path[1]] = value;
+  setCfg(next);
+};
+
+    const save = () => {
+      setSaving(true);
+      apiFetch({
+        path: '/qbnox-smtp/v1/settings',
+        method: 'POST',
+        data: cfg
+      }).then(() => setSaving(false));
+    };
+
+    const testMail = () => {
+      apiFetch({
+        path: '/qbnox-smtp/v1/test-mail',
+        method: 'POST'
+      }).then(res => {
+        setHealth(res.status === 'success' ? 'ok' : 'bad');
+        alert(
+          res.status === 'success'
+            ? `Test email accepted.\nSent to: ${res.to}`
+            : `Test failed.\n${res.message}`
+        );
+      });
+    };
+
+const applyProvider = provider => {
+  if (!PROVIDERS[provider] || !PROVIDERS[provider].host) return;
+
+  update(['smtp', 'host'], PROVIDERS[provider].host);
+  update(['smtp', 'port'], PROVIDERS[provider].port);
+  update(['smtp', 'encryption'], PROVIDERS[provider].encryption);
+};
+
+    return createElement(
+      'div',
+      { className: 'qbnox-card' },
+
+      /* Tabs */
+      createElement(
+        'div',
+        { className: 'qbnox-tabs' },
+        ['smtp','oauth','analytics'].map(t =>
+          createElement(
+            'div',
+            {
+              key: t,
+              className: 'qbnox-tab ' + (tab === t ? 'active' : ''),
+              onClick: () => setTab(t)
+            },
+            t === 'smtp' ? 'SMTP Settings' :
+            t === 'oauth' ? 'OAuth (Coming Soon)' :
+            'Analytics'
+          )
+        )
+      ),
+
+      /* SMTP TAB */
+      tab === 'smtp' && createElement(
+        'div',
+        null,
+
+        createElement(
+          'div',
+          { className: 'qbnox-field' },
+          createElement('label', null, 'Provider'),
+          createElement( 'select',
+  {
+    value: cfg.smtp?.provider || 'custom',
+    onChange: e => {
+      const p = e.target.value;
+      update(['smtp', 'provider'], p);
+      applyProvider(p);
+    }
+  },
+  Object.keys(PROVIDERS).map(p =>
+    createElement('option', { key: p, value: p }, PROVIDERS[p].label)
+  )
+)
+
+        ),
+
+/* SMTP Host */
+createElement(
+  'div',
+  { className: 'qbnox-field', key: 'host' },
+  createElement('label', null, 'SMTP HOST'),
+  createElement('input', {
+    type: 'text',
+    value: cfg.smtp?.host || '',
+    onChange: e => update(['smtp', 'host'], e.target.value)
+  })
+),
+
+/* Username */
+createElement(
+  'div',
+  { className: 'qbnox-field', key: 'username' },
+  createElement('label', null, 'USERNAME'),
+  createElement('input', {
+    type: 'text',
+    value: cfg.smtp?.username || '',
+    onChange: e => update(['smtp', 'username'], e.target.value)
+  })
+),
+
+/* Password (immediately after username) */
+createElement(
+  'div',
+  { className: 'qbnox-field', key: 'password' },
+  createElement('label', null, 'PASSWORD'),
+  createElement(
+    'div',
+    { className: 'qbnox-password-wrap' },
+    createElement('input', {
+      type: showPass ? 'text' : 'password',
+      value: cfg.smtp?.password || '',
+      onChange: e => update(['smtp', 'password'], e.target.value)
+    }),
+createElement('span', {
+  className:
+    'dashicons ' +
+    (showPass ? 'dashicons-visibility' : 'dashicons-hidden') +
+    ' qbnox-eye ' +
+    (showPass ? 'open' : 'closed'),
+  title: showPass ? 'Hide password' : 'Show password',
+  role: 'button',
+  'aria-label': showPass ? 'Hide password' : 'Show password',
+  onClick: () => setShowPass(!showPass)
+})
+
+  )
+),
+
+/* From Email */
+createElement(
+  'div',
+  { className: 'qbnox-field', key: 'from_email' },
+  createElement('label', null, 'FROM EMAIL'),
+  createElement('input', {
+    type: 'text',
+    value: cfg.smtp?.from_email || '',
+    onChange: e => update(['smtp', 'from_email'], e.target.value)
+  })
+),
+
+/* From Name */
+createElement(
+  'div',
+  { className: 'qbnox-field', key: 'from_name' },
+  createElement('label', null, 'FROM NAME'),
+  createElement('input', {
+    type: 'text',
+    value: cfg.smtp?.from_name || '',
+    onChange: e => update(['smtp', 'from_name'], e.target.value)
+  })
+),
+
+
+        createElement(
+          'div',
+          { className: 'qbnox-actions' },
+          createElement(
+            'button',
+            { className: 'button button-primary', onClick: save, disabled: saving },
+            saving ? 'Saving…' : 'Save Settings'
+          ),
+          ' ',
+          createElement(
+            'button',
+            { className: 'button', onClick: testMail },
+            'Send Test Email'
+          ),
+          health &&
+            createElement(
+              'span',
+              { className: 'qbnox-health ' + health },
+              health === 'ok' ? '● Healthy' : '● Error'
+            )
+        )
+      ),
+
+      /* OAuth TAB */
+      tab === 'oauth' &&
+        createElement('p', null, 'OAuth support will appear here (next version).'),
+
+      /* Analytics TAB */
+      tab === 'analytics' &&
+        createElement('p', null, 'Analytics already active via REST.')
+    );
+  }
+
+  wp.element.render(
+    createElement(App),
+    document.getElementById('qbnox-smtp-root')
+  );
+
+})(window.wp);
+

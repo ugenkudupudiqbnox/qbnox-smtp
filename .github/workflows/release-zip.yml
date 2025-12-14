@@ -1,0 +1,44 @@
+name: Build & Release Plugin ZIP
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set plugin slug
+        run: echo "PLUGIN_SLUG=qbnox-smtp" >> $GITHUB_ENV
+
+      - name: Prepare build directory
+        run: |
+          mkdir build
+          rsync -av \
+            --exclude='.git*' \
+            --exclude='node_modules' \
+            --exclude='src' \
+            --exclude='.github' \
+            --exclude='*.log' \
+            ./ build/${PLUGIN_SLUG}
+
+      - name: Create ZIP
+        run: |
+          cd build
+          zip -r ${PLUGIN_SLUG}.zip ${PLUGIN_SLUG}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/qbnox-smtp.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

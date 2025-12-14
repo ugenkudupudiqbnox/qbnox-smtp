@@ -33,6 +33,9 @@ register_rest_route('qbnox-smtp/v1', '/test-mail', [
     },
     'callback' => function (): array {
 
+        // Clear previous error
+        delete_site_option('qbnox_smtp_last_error');
+
         $to = get_site_option('admin_email');
 
         try {
@@ -41,21 +44,30 @@ register_rest_route('qbnox-smtp/v1', '/test-mail', [
                 'Qbnox SMTP Test',
                 'Test email from Qbnox Systems SMTP plugin.'
             );
-
-            return [
-                'status' => 'success',
-                'to'     => $to,
-                'message'=> 'Message accepted by SMTP client'
-            ];
-
         } catch (Throwable $e) {
-
             return [
                 'status'  => 'error',
                 'to'      => $to,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
+
+        // Check if WordPress reported a failure
+        $last_error = get_site_option('qbnox_smtp_last_error');
+
+        if (!empty($last_error)) {
+            return [
+                'status'  => 'error',
+                'to'      => $to,
+                'message' => $last_error['message'],
+            ];
+        }
+
+        return [
+            'status'  => 'success',
+            'to'      => $to,
+            'message' => 'Message accepted by SMTP client',
+        ];
     }
 ]);
 

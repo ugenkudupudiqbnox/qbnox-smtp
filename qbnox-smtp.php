@@ -31,14 +31,17 @@ register_activation_hook(__FILE__, function () {
     }
 });
 
-add_action('wp_mail_failed', function ($wp_error) {
-    Qbnox_SMTP_Logger::log(
-        'mail_failed',
+/**
+ * Capture last mail error safely for test email
+ */
+add_action('wp_mail_failed', function (WP_Error $error) {
+    update_site_option(
+        'qbnox_smtp_last_error',
         [
-            'error' => $wp_error->get_error_message(),
-            'data'  => $wp_error->get_error_data()
-        ],
-        'smtp'
+            'message' => $error->get_error_message(),
+            'data'    => $error->get_error_data(),
+            'time'    => current_time('mysql'),
+        ]
     );
 });
 

@@ -28,12 +28,18 @@
       }).then(() => setSaving(false));
     };
 
-    const testMail = () => {
-      apiFetch({
-        path: '/qbnox-smtp/v1/test-mail',
-        method: 'POST'
-      }).then(() => alert('Test email sent'));
-    };
+const testMail = () => {
+  apiFetch({
+    path: '/qbnox-smtp/v1/test-mail',
+    method: 'POST'
+  }).then(res => {
+    if (res.status === 'success') {
+      alert(`Test email accepted by SMTP.\nSent to: ${res.to}`);
+    } else {
+      alert(`Test email failed.\nReason: ${res.message}`);
+    }
+  });
+};
 
     return createElement(
       'div',

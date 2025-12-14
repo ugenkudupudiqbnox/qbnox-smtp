@@ -33,13 +33,29 @@ register_rest_route('qbnox-smtp/v1', '/test-mail', [
     },
     'callback' => function (): array {
 
-        wp_mail(
-            get_site_option('admin_email'),
-            'Qbnox SMTP Test',
-            'Test email from Qbnox Systems SMTP plugin.'
-        );
+        $to = get_site_option('admin_email');
 
-        return ['status' => 'sent'];
+        try {
+            wp_mail(
+                $to,
+                'Qbnox SMTP Test',
+                'Test email from Qbnox Systems SMTP plugin.'
+            );
+
+            return [
+                'status' => 'success',
+                'to'     => $to,
+                'message'=> 'Message accepted by SMTP client'
+            ];
+
+        } catch (Throwable $e) {
+
+            return [
+                'status'  => 'error',
+                'to'      => $to,
+                'message' => $e->getMessage()
+            ];
+        }
     }
 ]);
 

@@ -31,6 +31,17 @@ register_activation_hook(__FILE__, function () {
     }
 });
 
+add_action('wp_mail_failed', function ($wp_error) {
+    Qbnox_SMTP_Logger::log(
+        'mail_failed',
+        [
+            'error' => $wp_error->get_error_message(),
+            'data'  => $wp_error->get_error_data()
+        ],
+        'smtp'
+    );
+});
+
 
 Qbnox_SMTP_Mailer::init();
 Qbnox_SMTP_REST::init();

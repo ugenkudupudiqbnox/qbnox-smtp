@@ -2,15 +2,16 @@
 declare(strict_types=1);
 use PHPMailer\PHPMailer\OAuth;
 class Qbnox_SMTP_Mailer {
-    public static function init(): void {
-        add_action('phpmailer_init',[__CLASS__,'configure']);
-    }
-    public static function configure($phpmailer): void {
 
-    $cfg = get_site_option('qbnox_smtp_network', []);
+public static function configure($phpmailer): void {
+
+    $cfg = Qbnox_SMTP_Settings::get();
     if (empty($cfg['smtp']['host'])) {
         return;
     }
+
+    // Enable exceptions so SMTP failures are catchable
+    $phpmailer->exceptions = true;
 
     $phpmailer->isSMTP();
     $phpmailer->Host       = $cfg['smtp']['host'];

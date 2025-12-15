@@ -1,8 +1,6 @@
 # Qbnox Systems – SMTP Plugin
 
-Enterprise-grade SMTP plugin with OAuth2, SES/Brevo webhooks and analytics.
-
-Here is your content **cleanly converted to Markdown (MD)**, suitable for a README or docs file.
+Enterprise-grade SMTP plugin with SES/Brevo webhooks.
 
 ---
 

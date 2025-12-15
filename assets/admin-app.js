@@ -30,6 +30,40 @@
     const [saving, setSaving] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [health, setHealth] = useState(null);
+    const startOAuth = (provider) => {
+		  wp.apiFetch({
+			  path: '/qbnox-smtp/v1/oauth/start',
+			  method: 'POST',
+			  data: { provider }
+		  }).then(res => {
+			  if (res.url) {
+				  window.location.href = res.url;
+			  }
+		  }).catch(err => {
+			  alert('OAuth start failed');
+			  console.error(err);
+		  });
+     };
+
+     const disconnectOAuth = () => {
+		  wp.apiFetch({
+			  path: '/qbnox-smtp/v1/oauth/disconnect',
+			  method: 'POST'
+		  }).then(() => {
+			  window.location.reload();
+		  });
+     };
+
+useEffect(() => {
+  wp.apiFetch({ path: '/qbnox-smtp/v1/oauth/status' })
+    .then(res => {
+      setSettings(s => ({
+        ...s,
+        oauth_connected: res.connected,
+        oauth_provider: res.provider
+      }));
+    });
+}, []);
 
     useEffect(() => {
       apiFetch({ path: '/qbnox-smtp/v1/settings' }).then(setCfg);
@@ -284,12 +318,63 @@
         ),
 
       /* OAuth TAB */
-      tab === 'oauth' &&
-        createElement(
-          'p',
-          null,
-          'OAuth support will appear here in the next release.'
-        ),
+/* OAuth TAB */
+tab === 'oauth' &&
+  createElement(
+    'div',
+    { className: 'qbnox-oauth-tab' },
+
+    createElement(
+      'p',
+      null,
+      'Connect your Google or Microsoft account to enable OAuth.'
+    ),
+
+    createElement(
+      'button',
+      {
+        className: 'button button-primary',
+        onClick: () => {
+          wp.apiFetch({
+            path: '/qbnox-smtp/v1/oauth/start',
+            method: 'POST',
+            data: { provider: 'google' }
+          }).then(res => {
+            if (res.url) {
+              window.location.href = res.url;
+            }
+          }).catch(err => {
+            console.error(err);
+            alert('Failed to start Google OAuth');
+          });
+        }
+      },
+      'Connect with Google'
+    ),
+
+    createElement(
+      'button',
+      {
+        className: 'button',
+        style: { marginLeft: '10px' },
+        onClick: () => {
+          wp.apiFetch({
+            path: '/qbnox-smtp/v1/oauth/start',
+            method: 'POST',
+            data: { provider: 'microsoft' }
+          }).then(res => {
+            if (res.url) {
+              window.location.href = res.url;
+            }
+          }).catch(err => {
+            console.error(err);
+            alert('Failed to start Microsoft OAuth');
+          });
+        }
+      },
+      'Connect with Microsoft'
+    )
+  ),
 
       /* Analytics TAB */
       tab === 'analytics' &&
@@ -306,4 +391,3 @@
     document.getElementById('qbnox-smtp-root')
   );
 })(window.wp);
-

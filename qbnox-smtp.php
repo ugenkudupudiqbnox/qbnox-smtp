@@ -24,6 +24,12 @@ define('QBNOX_SMTP_VERSION', '2.0.4');
 require_once QBNOX_SMTP_PATH . 'includes/helpers.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-settings.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-logger.php';
+
+/* 🔐 OAuth support (NEW) */
+require_once QBNOX_SMTP_PATH . 'includes/class-crypto.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-oauth.php';
+
+/* Existing */
 require_once QBNOX_SMTP_PATH . 'includes/class-mailer.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-rest.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-webhooks.php';
@@ -69,6 +75,6 @@ add_action('plugins_loaded', function (): void {
     Qbnox_SMTP_Mailer::init();     // SMTP configuration
     Qbnox_SMTP_REST::init();       // REST API (settings, test mail, analytics)
     Qbnox_SMTP_Admin_UI::init();   // Network admin UI
-
+    Qbnox_SMTP_OAuth::init();
 });
 

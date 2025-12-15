@@ -1,9 +1,19 @@
 {
-  "name": "ugenkudupudiqbnox/qbnox-smtp",
-  "description": "Qbnox Systems Advanced SMTP plugin for WordPress (Multisite, OAuth, Webhooks, Analytics)",
-  "type": "wordpress-plugin",
-  "license": "GPL-2.0-or-later",
-  "require": {
-    "php": ">=8.0"
-  }
+    "name": "root/qbnox-smtp",
+    "autoload": {
+        "psr-4": {
+            "Root\\QbnoxSmtp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ugendreshwar Kudupudi",
+            "email": "ugen@qbnox.com"
+        }
+    ],
+    "require": {
+        "league/oauth2-client": "^2.9",
+        "league/oauth2-google": "^4.0",
+        "thenetworg/oauth2-azure": "^2.2"
+    }
 }

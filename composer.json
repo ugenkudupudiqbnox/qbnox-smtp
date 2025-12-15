@@ -1,5 +1,5 @@
 {
-    "name": "root/qbnox-smtp",
+    "name": "qbnoxsystems/qbnox-smtp",
     "autoload": {
         "psr-4": {
             "Root\\QbnoxSmtp\\": "src/"

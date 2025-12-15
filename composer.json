@@ -1,5 +1,5 @@
 {
-    "name": "wpackagist-plugin/qbnox-smtp",
+    "name": "ugenkudupudiqbnox/qbnox-smtp",
     "description": "Unified SMTP + OAuth (Google/Microsoft), encryption, logs UI",
     "type": "wordpress",
     "require": {

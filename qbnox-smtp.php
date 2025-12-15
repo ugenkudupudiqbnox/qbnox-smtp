@@ -23,6 +23,7 @@ define('QBNOX_SMTP_VERSION', '2.1.0');
  */
 require_once QBNOX_SMTP_PATH . 'includes/helpers.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-settings.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-oauth.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-logger.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-mailer.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-rest.php';
@@ -44,6 +45,20 @@ register_activation_hook(__FILE__, function (): void {
             Qbnox_SMTP_Settings::defaults()
         );
     }
+    // Ensure worker secrets exist (support rotation)
+    if (get_site_option('qbnox_smtp_worker_secrets') === false) {
+        $secret = wp_generate_password(48, false);
+        update_site_option('qbnox_smtp_worker_secrets', ['current' => $secret, 'previous' => null]);
+    }
+});
+
+register_deactivation_hook(__FILE__, function (): void {
+    // Unschedule token refresh cron
+    if (class_exists('Qbnox_SMTP_OAuth')) {
+        wp_clear_scheduled_hook(Qbnox_SMTP_OAuth::CRON_HOOK);
+    }
+    // Remove worker secrets
+    delete_site_option('qbnox_smtp_worker_secrets');
 });
 
 /**
@@ -65,8 +80,8 @@ add_action('wp_mail_failed', function (WP_Error $error): void {
  * Bootstrap plugin components
  */
 add_action('plugins_loaded', function (): void {
-
     Qbnox_SMTP_Mailer::init();     // SMTP configuration
     Qbnox_SMTP_REST::init();       // REST API (settings, test mail, analytics)
     Qbnox_SMTP_Admin_UI::init();   // Network admin UI
+    Qbnox_SMTP_OAuth::init();      // schedule token refresh
 });

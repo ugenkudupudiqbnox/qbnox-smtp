@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Qbnox Systems – SMTP Plugin
  * Description: Enterprise SMTP plugin with Multisite support, OAuth, Webhooks, Analytics and Test Email diagnostics.
- * Version: 2.0.4
+ * Version: 2.1.0
  * Author: Qbnox Systems
  * Network: true
  */
@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  */
 define('QBNOX_SMTP_PATH', plugin_dir_path(__FILE__));
 define('QBNOX_SMTP_URL', plugin_dir_url(__FILE__));
-define('QBNOX_SMTP_VERSION', '2.0.4');
+define('QBNOX_SMTP_VERSION', '2.1.0');
 
 /**
  * Includes

@@ -1,8 +1,9 @@
 {
   "name": "ugenkudupudiqbnox/qbnox-smtp",
-  "description": "Qbnox Systems Advanced SMTP plugin for WordPress (Multisite, OAuth, Webhooks, Analytics)",
+  "description": "Qbnox Systems SMTP plugin for WordPress (Multisite, OAuth, Webhooks, Analytics)",
   "type": "wordpress-plugin",
-  "license": "GPL-2.0-or-later",
+  "version": "2.1.0",
+  "license": "MIT",
   "require": {
     "php": ">=8.0"
   }

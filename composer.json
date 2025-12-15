@@ -1,19 +1,17 @@
 {
     "name": "qbnoxsystems/qbnox-smtp",
-    "autoload": {
-        "psr-4": {
-            "Root\\QbnoxSmtp\\": "src/"
-        }
+    "description": "Unified SMTP + OAuth (Google/Microsoft), encryption, logs UI",
+    "type": "wordpress",
+    "require": {
+        "league/oauth2-client": "^2.9",
+        "league/oauth2-google": "^4.1",
+        "thenetworg/oauth2-azure": "^2.2"
     },
+    "license": "MIT",
     "authors": [
         {
             "name": "Ugendreshwar Kudupudi",
             "email": "ugen@qbnox.com"
         }
-    ],
-    "require": {
-        "league/oauth2-client": "^2.9",
-        "league/oauth2-google": "^4.0",
-        "thenetworg/oauth2-azure": "^2.2"
-    }
+    ]
 }

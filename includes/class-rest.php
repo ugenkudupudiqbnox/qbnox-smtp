@@ -9,7 +9,7 @@ class Qbnox_SMTP_REST {
 
     public static function routes(): void {
 
-	    register_rest_route('qbnox-smtp/v1', '/settings', [
+register_rest_route('qbnox-smtp/v1', '/settings', [
     'methods' => ['GET', 'POST'],
     'permission_callback' => function (): bool {
         return current_user_can('manage_network_options');
@@ -26,6 +26,7 @@ class Qbnox_SMTP_REST {
     }
 ]);
 
+
 register_rest_route('qbnox-smtp/v1', '/test-mail', [
     'methods' => 'POST',
     'permission_callback' => function (): bool {
@@ -37,28 +38,64 @@ register_rest_route('qbnox-smtp/v1', '/test-mail', [
         delete_site_option('qbnox_smtp_last_error');
 
         $to = get_site_option('admin_email');
+        $from = $to;
+        $subject = 'Qbnox SMTP Test (API)';
+        $body = 'Test email sent using OAuth API';
 
-        wp_mail(
-            $to,
-            'Qbnox SMTP Test',
-            'Test email from Qbnox Systems SMTP plugin.'
-        );
+        $settings = Qbnox_SMTP_Settings::get();
+        $provider = $settings['oauth']['provider'] ?? null;
 
-        $error = get_site_option('qbnox_smtp_last_error');
+        try {
 
-        if (!empty($error)) {
+            if ($provider === 'google') {
+
+                Qbnox_SMTP_Gmail_API::send_test(
+                    $to,
+                    $subject,
+                    $body,
+                    $from
+                );
+
+                return [
+                    'status'    => 'success',
+                    'transport' => 'gmail-api',
+                    'to'        => $to,
+                ];
+
+            } elseif ($provider === 'microsoft') {
+
+                Qbnox_SMTP_MSGraph_API::send_test(
+                    $to,
+                    $subject,
+                    $body,
+                    $from
+                );
+
+                return [
+                    'status'    => 'success',
+                    'transport' => 'msgraph-api',
+                    'to'        => $to,
+                ];
+            }
+
+            return [
+                'status'  => 'error',
+                'message' => 'OAuth provider not configured',
+            ];
+
+        } catch (\Throwable $e) {
+
+            update_site_option('qbnox_smtp_last_error', [
+                'message' => $e->getMessage(),
+                'time'    => time(),
+            ]);
+
             return [
                 'status'  => 'error',
                 'to'      => $to,
-                'message' => $error['message'],
+                'message' => $e->getMessage(),
             ];
         }
-
-        return [
-            'status'  => 'success',
-            'to'      => $to,
-            'message' => 'Message accepted by WordPress mailer',
-        ];
     }
 ]);
 

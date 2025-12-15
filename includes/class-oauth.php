@@ -130,10 +130,21 @@ class Qbnox_SMTP_OAuth {
 			wp_die('OAuth token exchange failed');
 		}
 
+		/*
 		update_site_option('qbnox_smtp_oauth_tokens', [
 			'provider'      => $provider,
 			'refresh_token' => Qbnox_SMTP_Crypto::encrypt($data['refresh_token']),
 		]);
+		 */
+		// After token exchange success
+update_site_option('qbnox_smtp_oauth_identity', [
+    'provider' => $provider,
+    'email'    => $email, // ugen@qbnox.com
+    'verified' => true,
+    'time'     => time(),
+    'refresh_token' => Qbnox_SMTP_Crypto::encrypt($data['refresh_token']),
+]);
+
 	}
 
 	public static function disconnect() {

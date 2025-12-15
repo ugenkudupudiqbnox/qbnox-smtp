@@ -27,6 +27,7 @@ class Qbnox_SMTP_Settings {
                 'client_secret' => '',
                 'email'         => '',
             ],
+	    'mail_mode' => 'smtp', // smtp | oauth
         ];
     }
 

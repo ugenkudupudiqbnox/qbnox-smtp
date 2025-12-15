@@ -1,19 +1,22 @@
 <?php
 declare(strict_types=1);
 
-class Qbnox_SMTP_Mailer {
+class Qbnox_SMTP_Mailer
+{
 
     /**
      * Register PHPMailer configuration hook
      */
-    public static function init(): void {
+    public static function init(): void
+    {
         add_action('phpmailer_init', [__CLASS__, 'configure']);
     }
 
     /**
      * Configure SMTP settings
      */
-    public static function configure($phpmailer): void {
+    public static function configure($phpmailer): void
+    {
 
         $cfg = Qbnox_SMTP_Settings::get();
 
@@ -37,4 +40,3 @@ class Qbnox_SMTP_Mailer {
         }
     }
 }
-

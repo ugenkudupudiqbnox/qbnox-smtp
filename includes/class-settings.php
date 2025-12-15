@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
-class Qbnox_SMTP_Settings {
+class Qbnox_SMTP_Settings
+{
 
-    public static function defaults(): array {
+    public static function defaults(): array
+    {
         return [
             'smtp' => [
                 'host'        => '',
@@ -33,7 +35,8 @@ class Qbnox_SMTP_Settings {
     /**
      * Always return a valid array, even if DB data is corrupted or legacy.
      */
-    public static function get(): array {
+    public static function get(): array
+    {
 
         $saved = get_site_option('qbnox_smtp_network');
 
@@ -67,7 +70,8 @@ class Qbnox_SMTP_Settings {
     /**
      * Save settings safely and consistently.
      */
-    public static function save(array $data): void {
+    public static function save(array $data): void
+    {
         update_site_option(
             'qbnox_smtp_network',
             array_replace_recursive(
@@ -77,4 +81,3 @@ class Qbnox_SMTP_Settings {
         );
     }
 }
-

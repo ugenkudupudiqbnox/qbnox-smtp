@@ -1,66 +1,69 @@
 <?php
 declare(strict_types=1);
 
-class Qbnox_SMTP_REST {
+class Qbnox_SMTP_REST
+{
 
-    public static function init(): void {
+    public static function init(): void
+    {
         add_action('rest_api_init', [__CLASS__, 'routes']);
     }
 
-    public static function routes(): void {
+    public static function routes(): void
+    {
 
-	    register_rest_route('qbnox-smtp/v1', '/settings', [
-    'methods' => ['GET', 'POST'],
-    'permission_callback' => function (): bool {
-        return current_user_can('manage_network_options');
-    },
-    'callback' => function (WP_REST_Request $req) {
+        register_rest_route('qbnox-smtp/v1', '/settings', [
+        'methods' => ['GET', 'POST'],
+        'permission_callback' => function (): bool {
+            return current_user_can('manage_network_options');
+        },
+        'callback' => function (WP_REST_Request $req) {
 
-	if ($req->get_method() === 'POST') {
-            Qbnox_SMTP_Settings::save(
-                $req->get_json_params()
-            );
+            if ($req->get_method() === 'POST') {
+                Qbnox_SMTP_Settings::save(
+                    $req->get_json_params()
+                );
+            }
+
+            return Qbnox_SMTP_Settings::get();
         }
+        ]);
 
-	return Qbnox_SMTP_Settings::get();
-    }
-]);
+        register_rest_route('qbnox-smtp/v1', '/test-mail', [
+        'methods' => 'POST',
+        'permission_callback' => function (): bool {
+            return current_user_can('manage_network_options');
+        },
+        'callback' => function (): array {
 
-register_rest_route('qbnox-smtp/v1', '/test-mail', [
-    'methods' => 'POST',
-    'permission_callback' => function (): bool {
-        return current_user_can('manage_network_options');
-    },
-    'callback' => function (): array {
+            // Reset last error
+            delete_site_option('qbnox_smtp_last_error');
 
-        // Reset last error
-        delete_site_option('qbnox_smtp_last_error');
+            $to = get_site_option('admin_email');
 
-        $to = get_site_option('admin_email');
+            wp_mail(
+                $to,
+                'Qbnox SMTP Test',
+                'Test email from Qbnox Systems SMTP plugin.'
+            );
 
-        wp_mail(
-            $to,
-            'Qbnox SMTP Test',
-            'Test email from Qbnox Systems SMTP plugin.'
-        );
+            $error = get_site_option('qbnox_smtp_last_error');
 
-        $error = get_site_option('qbnox_smtp_last_error');
-
-        if (!empty($error)) {
-            return [
+            if (!empty($error)) {
+                return [
                 'status'  => 'error',
                 'to'      => $to,
                 'message' => $error['message'],
-            ];
-        }
+                ];
+            }
 
-        return [
+            return [
             'status'  => 'success',
             'to'      => $to,
             'message' => 'Message accepted by WordPress mailer',
-        ];
-    }
-]);
+            ];
+        }
+        ]);
 
         register_rest_route('qbnox-smtp/v1', '/analytics', [
             'methods'  => 'GET',
@@ -96,4 +99,3 @@ register_rest_route('qbnox-smtp/v1', '/test-mail', [
         ]);
     }
 }
-

@@ -1,0 +1,49 @@
+name: Code Quality (PHP & JS)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ----------------------
+      # PHP – WordPress Coding Standards
+      # ----------------------
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Configure PHPCS
+        run: |
+          ./vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
+
+      - name: Run PHPCS (PHP formatting check)
+        run: ./vendor/bin/phpcs
+
+      # ----------------------
+      # JavaScript – Prettier
+      # ----------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies
+        run: npm ci || npm install
+
+      - name: Run Prettier check
+        run: npx prettier --check "**/*.js"
+

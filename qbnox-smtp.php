@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Qbnox Systems – Advanced SMTP
+ * Plugin Name: Qbnox Systems – SMTP Plugin
  * Description: Enterprise SMTP plugin with Multisite support, OAuth, Webhooks, Analytics and Test Email diagnostics.
  * Version: 2.0.4
  * Author: Qbnox Systems
@@ -69,6 +69,4 @@ add_action('plugins_loaded', function (): void {
     Qbnox_SMTP_Mailer::init();     // SMTP configuration
     Qbnox_SMTP_REST::init();       // REST API (settings, test mail, analytics)
     Qbnox_SMTP_Admin_UI::init();   // Network admin UI
-
 });
-

@@ -35,6 +35,14 @@ require_once QBNOX_SMTP_PATH . 'includes/class-rest.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-webhooks.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-admin-ui.php';
 
+/* OAuth Gmail and MS 360 */
+require_once QBNOX_SMTP_PATH . 'includes/class-gmail-api.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-msgraph-api.php';
+
+require_once QBNOX_SMTP_PATH . 'includes/class-circuit-breaker.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-retry.php';
+
+
 /**
  * Plugin activation
  */

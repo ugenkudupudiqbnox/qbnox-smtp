@@ -201,5 +201,45 @@ class Qbnox_SMTP_OAuth {
 		];
 	}
 
+	public static function get_access_token(string $provider): ?string {
+
+		$tokens = get_site_option('qbnox_smtp_oauth_tokens');
+		if (empty($tokens['refresh_token']) || $tokens['provider'] !== $provider) {
+			return null;
+		}
+
+		$refreshToken = Qbnox_SMTP_Crypto::decrypt($tokens['refresh_token']);
+		if (!$refreshToken) {
+			return null;
+		}
+
+		$settings = Qbnox_SMTP_Settings::get();
+
+		$endpoint = $provider === 'google'
+			? 'https://oauth2.googleapis.com/token'
+			: 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+
+		$response = wp_remote_post($endpoint, [
+			'timeout' => 15,
+			'body' => [
+				'client_id'     => $settings['oauth']['client_id'] ?? '',
+				'client_secret' => $settings['oauth']['client_secret'] ?? '',
+				'grant_type'    => 'refresh_token',
+				'refresh_token' => $refreshToken,
+				'scope'         => $provider === 'google'
+				? 'https://mail.google.com/'
+				: 'https://graph.microsoft.com/.default',
+			],
+		]);
+
+		if (is_wp_error($response)) {
+			return null;
+		}
+
+		$body = json_decode(wp_remote_retrieve_body($response), true);
+
+		return $body['access_token'] ?? null;
+	}
+
 }
 

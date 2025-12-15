@@ -376,6 +376,37 @@ tab === 'oauth' &&
     )
   ),
 
+  createElement(
+  'div',
+  { style: { marginTop: '15px' } },
+
+  createElement(
+    'button',
+    {
+      className: 'button',
+      onClick: () => {
+        wp.apiFetch({
+          path: '/qbnox-smtp/v1/oauth/status',
+          method: 'GET'
+        }).then(res => {
+          if (res.connected) {
+            alert(
+              'OAuth OK (' + res.provider + ')\nExpires in: ' +
+              res.expires_in + ' seconds'
+            );
+          } else {
+            alert('OAuth error: ' + res.error);
+          }
+        }).catch(err => {
+          console.error(err);
+          alert('Failed to check OAuth status');
+        });
+      }
+    },
+    'Test OAuth Connection'
+  )
+),
+
       /* Analytics TAB */
       tab === 'analytics' &&
         createElement(

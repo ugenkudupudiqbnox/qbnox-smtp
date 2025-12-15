@@ -1,7 +1,7 @@
 {
     "name": "ugenkudupudiqbnox/qbnox-smtp",
     "description": "Unified SMTP + OAuth (Google/Microsoft), encryption, logs UI",
-    "type": "wordpress",
+    "type": "wordpress-plugin",
     "require": {
         "league/oauth2-client": "^2.9",
         "league/oauth2-google": "^4.1",

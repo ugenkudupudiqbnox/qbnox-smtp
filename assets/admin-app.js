@@ -30,6 +30,19 @@
     const [saving, setSaving] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [health, setHealth] = useState(null);
+    const [settings, setSettings] = useState(null);
+    const [loading, setLoading] = useState(true);
+  const updateSetting = (key, value) => {
+    const next = { ...settings, [key]: value };
+    setSettings(next);
+
+    wp.apiFetch({
+      path: '/qbnox-smtp/v1/settings',
+      method: 'POST',
+      data: next
+    });
+  };
+
     const startOAuth = (provider) => {
 		  wp.apiFetch({
 			  path: '/qbnox-smtp/v1/oauth/start',
@@ -324,11 +337,21 @@ tab === 'oauth' &&
     'div',
     { className: 'qbnox-oauth-tab' },
 
-    createElement(
-      'p',
-      null,
-      'Connect your Google or Microsoft account to enable OAuth.'
-    ),
+createElement(
+  'label',
+  { style: { display: 'block', marginTop: '10px' } },
+  createElement('input', {
+    type: 'checkbox',
+    checked: (settings.mail_mode || 'smtp') === 'oauth',
+    onChange: (e) => {
+      updateSetting(
+        'mail_mode',
+        e.target.checked ? 'oauth' : 'smtp'
+      );
+    }
+  }),
+  ' Send all mail using OAuth API'
+),
 
     createElement(
       'button',

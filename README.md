@@ -8,7 +8,6 @@ SMTP plugin for WordPress with advanced features including Amazon SES and Brevo 
 
 - **🚀 Reliable SMTP**: Configure reliable SMTP email delivery for your WordPress site
 - **🌐 Multisite Support**: Network-wide configuration for WordPress multisite installations
-- **🔐 OAuth Authentication**: Secure authentication support for modern email providers
 - **📊 Email Analytics**: Track email delivery, opens, bounces, and engagement metrics
 - **🔔 Webhook Integration**: Real-time webhooks for Amazon SES and Brevo (SendinBlue)
 - **🧪 Test Email Diagnostics**: Built-in tools to test and troubleshoot email delivery

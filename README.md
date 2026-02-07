@@ -25,7 +25,26 @@ Enterprise-grade SMTP plugin for WordPress with advanced features including Amaz
 
 ## Installation
 
-### Option 1: Download Latest Release (Recommended)
+### Option 1: Bedrock (Recommended)
+
+For modern WordPress development using [Bedrock](https://roots.io/bedrock/) by Roots:
+
+1. Add the plugin to your Bedrock project using Composer:
+
+```bash
+composer require ugenkudupudiqbnox/qbnox-smtp
+```
+
+2. The plugin will be automatically installed in the `web/app/plugins/` directory
+3. Activate the plugin through the WordPress admin panel or via WP-CLI:
+
+```bash
+wp plugin activate qbnox-smtp
+```
+
+This method is recommended for professional WordPress development as it provides better dependency management and easier updates.
+
+### Option 2: Download Latest Release
 
 1. Download the latest [`qbnox-smtp.zip`](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases/tag/v4.4.0) file
 2. In your WordPress admin panel, navigate to **Plugins > Add New**
@@ -36,14 +55,14 @@ Enterprise-grade SMTP plugin for WordPress with advanced features including Amaz
 
 NOTE: [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
 
-### Option 2: Manual Installation
+### Option 3: Manual Installation
 
 1. Download the latest release [`qbnox-smtp.zip`](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases/tag/v4.4.0) or from the [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
 2. Extract the zip file
 3. Upload the `qbnox-smtp` folder to `/wp-content/plugins/` directory via FTP or file manager
 4. Activate the plugin through the **Plugins** menu in WordPress
 
-### Option 3: Install from Source (Advanced)
+### Option 4: Install from Source (Advanced)
 
 If you want to install directly from the GitHub repository:
 

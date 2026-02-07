@@ -38,7 +38,7 @@ NOTE: [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
 
 ### Option 2: Manual Installation
 
-1. Download the latest release from the [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
+1. Download the latest release [`qbnox-smtp.zip`](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases/tag/v4.4.0) or from the [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
 2. Extract the zip file
 3. Upload the `qbnox-smtp` folder to `/wp-content/plugins/` directory via FTP or file manager
 4. Activate the plugin through the **Plugins** menu in WordPress

@@ -113,4 +113,4 @@ This plugin is licensed under the [MIT License](https://opensource.org/licenses/
 
 ## Version
 
-Current stable version: **4.4.0**
+Current stable version: **4.5.0**

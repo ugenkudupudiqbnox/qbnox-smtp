@@ -1,12 +1,12 @@
 # Qbnox Systems – SMTP Plugin
 
-Enterprise-grade SMTP plugin for WordPress with advanced features including Amazon SES and Brevo webhook support, multisite compatibility, OAuth authentication, and comprehensive email analytics.
+SMTP plugin for WordPress with advanced features including Amazon SES and Brevo webhook support, multisite compatibility, OAuth authentication, and comprehensive email analytics.
 
 ---
 
 ## Features
 
-- **🚀 Enterprise SMTP**: Configure reliable SMTP email delivery for your WordPress site
+- **🚀 Reliable SMTP**: Configure reliable SMTP email delivery for your WordPress site
 - **🌐 Multisite Support**: Network-wide configuration for WordPress multisite installations
 - **🔐 OAuth Authentication**: Secure authentication support for modern email providers
 - **📊 Email Analytics**: Track email delivery, opens, bounces, and engagement metrics

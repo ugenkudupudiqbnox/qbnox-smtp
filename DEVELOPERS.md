@@ -59,7 +59,6 @@ npm install --save-dev prettier
   "printWidth": 80
 }
 ```
-Here is the text **formatted cleanly in Markdown**, consistent with the earlier sections:
 
 ---
 

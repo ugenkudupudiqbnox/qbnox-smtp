@@ -27,13 +27,14 @@ Enterprise-grade SMTP plugin for WordPress with advanced features including Amaz
 
 ### Option 1: Download Latest Release (Recommended)
 
-1. Go to the [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
-2. Download the latest `qbnox-smtp.zip` file
-3. In your WordPress admin panel, navigate to **Plugins > Add New**
-4. Click **Upload Plugin** at the top of the page
-5. Choose the downloaded `qbnox-smtp.zip` file
-6. Click **Install Now**
-7. After installation, click **Activate Plugin**
+1. Download the latest [`qbnox-smtp.zip`](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases/tag/v4.4.0) file
+2. In your WordPress admin panel, navigate to **Plugins > Add New**
+3. Click **Upload Plugin** at the top of the page
+4. Choose the downloaded `qbnox-smtp.zip` file
+5. Click **Install Now**
+6. After installation, click **Activate Plugin**
+
+NOTE: [Releases page](https://github.com/ugenkudupudiqbnox/qbnox-smtp/releases)
 
 ### Option 2: Manual Installation
 

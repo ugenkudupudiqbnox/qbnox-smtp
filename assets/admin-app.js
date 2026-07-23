@@ -412,11 +412,11 @@ THE SOFTWARE.`
               createElement(
                 'a',
                 {
-                  href: 'https://www.qbnox.com',
+                  href: 'https://www.qbnoxsystems.com',
                   target: '_blank',
                   rel: 'noopener noreferrer',
                 },
-                'https://www.qbnox.com'
+                'https://www.qbnoxsystems.com'
               )
             ),
 

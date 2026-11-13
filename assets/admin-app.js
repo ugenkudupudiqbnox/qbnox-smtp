@@ -30,9 +30,18 @@
     const [saving, setSaving] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [health, setHealth] = useState(null);
+    const [testEmail, setTestEmail] = useState('');
+    const [adminEmail, setAdminEmail] = useState('');
 
     useEffect(() => {
-      apiFetch({ path: '/qbnox-smtp/v1/settings' }).then(setCfg);
+      apiFetch({ path: '/qbnox-smtp/v1/settings' }).then((data) => {
+        setCfg(data);
+        // Set test email to admin email if available
+        if (data.admin_email) {
+          setTestEmail(data.admin_email);
+          setAdminEmail(data.admin_email);
+        }
+      });
     }, []);
 
     if (!cfg) {
@@ -46,6 +55,18 @@
       setCfg((prev) => {
         const next = JSON.parse(JSON.stringify(prev));
         next.smtp[field] = value;
+        return next;
+      });
+    };
+
+    /**
+     * Update Brevo field
+     */
+    const updateBrevo = (field, value) => {
+      setCfg((prev) => {
+        const next = JSON.parse(JSON.stringify(prev));
+        if (!next.brevo) next.brevo = {};
+        next.brevo[field] = value;
         return next;
       });
     };
@@ -75,13 +96,25 @@
         path: '/qbnox-smtp/v1/settings',
         method: 'POST',
         data: cfg,
-      }).then(() => setSaving(false));
+      })
+        .then((response) => {
+          setSaving(false);
+          alert('✅ Settings saved successfully!');
+          // Update cfg with the response to ensure we have the latest data
+          setCfg(response);
+        })
+        .catch((error) => {
+          setSaving(false);
+          alert('❌ Failed to save settings:\n' + (error.message || 'Unknown error'));
+          console.error('Save error:', error);
+        });
     };
 
     const testMail = () => {
       apiFetch({
         path: '/qbnox-smtp/v1/test-mail',
         method: 'POST',
+        data: { test_email: testEmail || undefined }
       }).then((res) => {
         setHealth(res.status === 'success' ? 'ok' : 'bad');
         alert(
@@ -148,7 +181,90 @@
             )
           ),
 
-          /* SMTP Host */
+          /* Brevo Method Selection (API or SMTP) */
+          cfg.smtp?.provider === 'brevo' &&
+            createElement(
+              'div',
+              { className: 'qbnox-field' },
+              createElement('label', null, 'BREVO DELIVERY METHOD'),
+              createElement(
+                'select',
+                {
+                  value: cfg.brevo?.method || 'api',
+                  onChange: (e) => updateBrevo('method', e.target.value)
+                },
+                createElement('option', { value: 'api' }, 'API (Recommended - Faster & More Reliable)'),
+                createElement('option', { value: 'smtp' }, 'SMTP Relay')
+              )
+            ),
+
+          /* Brevo API Key (when API method is selected) */
+          cfg.smtp?.provider === 'brevo' && (cfg.brevo?.method || 'api') === 'api' &&
+            createElement(
+              'div',
+              { className: 'qbnox-field' },
+              createElement('label', null, 'BREVO API KEY'),
+              createElement(
+                'div',
+                { className: 'qbnox-password-wrap' },
+                createElement('input', {
+                  type: showPass ? 'text' : 'password',
+                  value: cfg.brevo?.api_key || '',
+                  onChange: (e) => updateBrevo('api_key', e.target.value),
+                  placeholder: 'xkeysib-...'
+                }),
+                createElement('span', {
+                  className:
+                    'dashicons ' +
+                    (showPass
+                      ? 'dashicons-visibility open'
+                      : 'dashicons-hidden closed') +
+                    ' qbnox-eye',
+                  title: showPass ? 'Hide API key' : 'Show API key',
+                  role: 'button',
+                  'aria-label': showPass ? 'Hide API key' : 'Show API key',
+                  onClick: () => setShowPass(!showPass),
+                })
+              )
+            ),
+
+          /* Brevo API Key help text */
+          cfg.smtp?.provider === 'brevo' && (cfg.brevo?.method || 'api') === 'api' &&
+            createElement('p', { style: { fontSize: '12px', color: '#666', margin: '4px 0 12px 0' } },
+              'Get your API key from: ',
+              createElement('a', { href: 'https://app.brevo.com/settings/keys/api', target: '_blank' }, 'Brevo Dashboard')
+            ),
+
+          /* Brevo From Email (API method) */
+          cfg.smtp?.provider === 'brevo' && (cfg.brevo?.method || 'api') === 'api' &&
+            createElement(
+              'div',
+              { className: 'qbnox-field' },
+              createElement('label', null, 'FROM EMAIL'),
+              createElement('input', {
+                type: 'email',
+                value: cfg.brevo?.from_email || '',
+                onChange: (e) => updateBrevo('from_email', e.target.value),
+                placeholder: 'noreply@yourdomain.com'
+              })
+            ),
+
+          /* Brevo From Name (API method) */
+          cfg.smtp?.provider === 'brevo' && (cfg.brevo?.method || 'api') === 'api' &&
+            createElement(
+              'div',
+              { className: 'qbnox-field' },
+              createElement('label', null, 'FROM NAME'),
+              createElement('input', {
+                type: 'text',
+                value: cfg.brevo?.from_name || '',
+                onChange: (e) => updateBrevo('from_name', e.target.value),
+                placeholder: 'Your Organization Name'
+              })
+            ),
+
+          /* SMTP Host (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -160,7 +276,8 @@
             })
           ),
 
-          /* Port */
+          /* Port (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -172,7 +289,8 @@
             })
           ),
 
-          /* Encryption */
+          /* Encryption (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -189,7 +307,8 @@
             )
           ),
 
-          /* Username */
+          /* Username (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -201,7 +320,8 @@
             })
           ),
 
-          /* Password (eye icon) */
+          /* Password (eye icon) (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -229,7 +349,8 @@
             )
           ),
 
-          /* From Email */
+          /* From Email (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -241,7 +362,8 @@
             })
           ),
 
-          /* From Name */
+          /* From Name (hidden for Brevo API) */
+          (cfg.smtp?.provider !== 'brevo' || cfg.brevo?.method === 'smtp') &&
           createElement(
             'div',
             { className: 'qbnox-field' },
@@ -251,6 +373,24 @@
               value: cfg.smtp?.from_name || '',
               onChange: (e) => update('from_name', e.target.value),
             })
+          ),
+
+          /* Test Email Address */
+          createElement(
+            'div',
+            { className: 'qbnox-field' },
+            createElement('label', null, 'TEST EMAIL ADDRESS (Optional)'),
+            createElement('input', {
+              type: 'email',
+              value: testEmail,
+              onChange: (e) => setTestEmail(e.target.value),
+              placeholder: 'Leave empty to use admin email'
+            })
+          ),
+
+          /* Test Email Address help text */
+          createElement('p', { style: { fontSize: '12px', color: '#666', margin: '4px 0 12px 0' } },
+            'Specify a custom email address for testing. If left empty, test email will be sent to the network admin email.'
           ),
 
           /* Actions */

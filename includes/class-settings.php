@@ -8,6 +8,7 @@ class Qbnox_SMTP_Settings
     {
         return [
             'smtp' => [
+                'provider'    => 'custom',
                 'host'        => '',
                 'port'        => 587,
                 'encryption'  => 'tls',
@@ -28,6 +29,17 @@ class Qbnox_SMTP_Settings
                 'client_id'     => '',
                 'client_secret' => '',
                 'email'         => '',
+            ],
+            'brevo' => [
+                'enabled'    => false,
+                'method'     => 'api', // 'smtp' or 'api'
+                'api_key'    => '',
+                'smtp_host'  => 'smtp-relay.brevo.com',
+                'smtp_port'  => 587,
+                'smtp_user'  => '',
+                'smtp_pass'  => '',
+                'from_email' => '',
+                'from_name'  => '',
             ],
         ];
     }

@@ -24,6 +24,7 @@ define('QBNOX_SMTP_VERSION', '2.1.0');
 require_once QBNOX_SMTP_PATH . 'includes/helpers.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-settings.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-logger.php';
+require_once QBNOX_SMTP_PATH . 'includes/class-brevo-api.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-mailer.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-rest.php';
 require_once QBNOX_SMTP_PATH . 'includes/class-webhooks.php';
